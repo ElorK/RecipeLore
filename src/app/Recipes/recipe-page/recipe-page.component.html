@@ -1,0 +1,20 @@
+<mat-card>
+    <mat-card-header>
+    <mat-card-title>{{recipe.name}}</mat-card-title>
+    <mat-card-subtitle>{{recipe.category}}</mat-card-subtitle>
+</mat-card-header>
+<img mat-card-image [src]="recipe.imageUrl">
+<mat-card-content>
+    <hr>
+<mat-card-title>מצרכים:</mat-card-title>
+    
+    <mat-list *ngFor="let ing of recipe.ingredients">
+        <mat-list-item>{{ing}}</mat-list-item>
+    </mat-list>
+    <hr>
+    <mat-card-title>תהליך</mat-card-title>
+    <mat-list *ngFor="let proc of recipe.process">
+        <mat-list-item>{{proc}}</mat-list-item>
+    </mat-list>
+</mat-card-content>
+</mat-card>

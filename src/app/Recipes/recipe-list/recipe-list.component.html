@@ -1,0 +1,34 @@
+<div class="content">
+    <ng-container *ngIf="selectedRecipe; else recipeListShow">
+        <recipe-page [recipe]="selectedRecipe"></recipe-page>
+        <hr>
+        <button mat-button (click)="selectedRecipe = undefined">חזרה</button>
+        <a mat-button color="primary" [routerLink]="['/edit', selectedRecipe.id] ">עריכה</a>
+        <button mat-button color="warn" (click)="onDelete(selectedRecipe.id)">מחיקה</button>
+    </ng-container>
+    <ng-template #recipeListShow>
+        <div fxLayout="row wrap" fxLayoutGap="50px grid" *ngIf="recipeList.length > 0">
+            <div  fxFlex="50%" fxFlex.xs="100%" *ngFor="let recipe of recipeList">
+                    <mat-card class="recipeCard" appearance="outlined" (click)="selectRecipe(recipe)">
+                        <mat-card-header>
+                            <mat-card-title>{{recipe.name}}</mat-card-title>
+                            <mat-card-subtitle>{{recipe.category}}</mat-card-subtitle>
+                        </mat-card-header>
+                        <img mat-card-image [src]="recipe.imageUrl">
+                        <mat-card-content>
+                            מצרכים:
+                            <hr>
+                            <mat-list *ngFor="let ing of recipe.ingredients">
+                                {{ing}}
+                            </mat-list>
+                            תהליך:
+                            <hr>
+                            <mat-list *ngFor="let proc of recipe.process">
+                                {{proc}}
+                            </mat-list>
+                        </mat-card-content>
+                    </mat-card>
+            </div>
+        </div>
+    </ng-template>
+</div>

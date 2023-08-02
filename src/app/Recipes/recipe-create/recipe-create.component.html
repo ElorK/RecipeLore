@@ -1,0 +1,63 @@
+<mat-card>
+    <form (submit)="submitHandler(formDirective)" [formGroup]="form" #formDirective="ngForm">
+        <mat-card-header>
+            <mat-card-title>
+                Id
+            </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <mat-form-field>
+                <label for="name"></label>
+                <input formControlName="name" matInput type="text" placeholder="שם מתכון" required>
+                <!-- <mat-error *ngIf="nameInput.invalid">יש להזין שם מתכון</mat-error> -->
+            </mat-form-field>
+            <hr>
+            <mat-form-field>
+                <label for="category"></label>
+                <mat-select formControlName="category" placeholder="קטגוריה" required>
+                    <mat-option value="ראשונה">ראשונה</mat-option>
+                    <mat-option value="עיקרית">עיקרית</mat-option>
+                    <mat-option value="קינוח">קינוח</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <!-- <mat-error *ngIf="catInput.invalid">יש לבחור קטגוריה</mat-error> -->
+            <hr>
+            <mat-card-title>רכיבים</mat-card-title>
+            <div formArrayName="ingredients">
+                <mat-list *ngFor="let ings of ingArray.controls; let i = index" [formGroupName]="i">
+                    <mat-form-field>
+                        <input matInput type="text" formControlName="text" value="" [placeholder]="'רכיב ' + [i+1]">
+                    </mat-form-field>
+                    <button mat-fab color="primary" type="button"
+                        (click)="subArrayDelete(ingArray, i)"><mat-icon>delete</mat-icon></button>
+                </mat-list>
+            </div>
+            <button mat-fab color="primary" type="button" (click)="subArrayAdd(ingArray)">
+                <mat-icon>add</mat-icon>
+            </button>
+            <hr>
+            <mat-card-title>תהליך</mat-card-title>
+            <div formArrayName="process">
+                <mat-list *ngFor="let step of procArray.controls; let i = index" [formGroupName]="i">
+                    <mat-form-field>
+                        <input matInput type="text" formControlName="text" value="" [placeholder]="'שלב ' + [i+1]">
+                    </mat-form-field>
+                    <button mat-fab color="primary" type="button"
+                        (click)="subArrayDelete(procArray, i)"><mat-icon>delete</mat-icon></button>
+                </mat-list>
+            </div>
+            <button mat-fab color="primary" type="button" (click)="subArrayAdd(procArray)">
+                <mat-icon>add</mat-icon>
+            </button>
+            <hr>
+            <mat-card-title>תמונה</mat-card-title>
+            <img [src]="imageUrl">
+            <div>
+                <mat-form-field>
+                    <input matInput type="text" formControlName="imageUrl" placeholder="קישור לתמונה" required>
+                </mat-form-field>
+            </div>
+        </mat-card-content>
+        <button mat-raised-button color="primary" type="submit">שלח</button>
+    </form>
+</mat-card>
