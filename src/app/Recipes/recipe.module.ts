@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule } from '@angular/material/dialog';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { RecipeListComponent } from './recipe-list/recipe-list.component';
 import { RecipeCreateComponent } from './recipe-create/recipe-create.component';
 import { FlexLayoutModule } from "@angular/flex-layout";
@@ -38,6 +39,7 @@ import { AppRoutingModule } from '../app-routing.module';
     MatSelectModule,
     MatIconModule,
     MatDialogModule,
+    MatProgressSpinnerModule,
     FlexLayoutModule
   ],
   exports: [

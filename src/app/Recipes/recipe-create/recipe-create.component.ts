@@ -14,6 +14,7 @@ import { ActivatedRoute, ParamMap } from '@angular/router';
 export class RecipeCreateComponent {
   form!: FormGroup;
   imageUrl = "assets/placeholder.png";
+  isLoading = false;
 
   // For Edit Mode
   currentRecipe?: Recipe;
@@ -38,7 +39,9 @@ export class RecipeCreateComponent {
       if (paramMap.has('recipeId')) {
         this._mode = 'edit';
         this._recipeId = paramMap.get('recipeId')!;
+        this.isLoading = true;
         this.recipeService.getRecipe(this._recipeId).subscribe(recipe => {
+          this.isLoading = false;
           this.currentRecipe = {
             id: recipe._id,
             name: recipe.name,
@@ -122,6 +125,7 @@ export class RecipeCreateComponent {
   }
   submitHandler(formDirective: FormGroupDirective) {
     if (this.form.valid) {
+      this.isLoading = true;
       if (this._mode === 'create') {
         const newRecipe: Recipe = {
           id: '',

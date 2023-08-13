@@ -12,14 +12,17 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   recipeList: Recipe[] = [];
   private recipeSub?: Subscription;
   selectedRecipe?: Recipe = undefined;
+  isLoading = false;
 
 
   constructor(public recipeService: RecipeService) { };
 
   ngOnInit() {
+    this.isLoading = true;
     this.recipeService.getRecipes();
     this.recipeSub = this.recipeService.getRecipesUpdateListener()
       .subscribe((recipeList: Recipe[]) => {
+        this.isLoading = false;
         this.recipeList = recipeList
       });
   }

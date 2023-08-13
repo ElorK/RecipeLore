@@ -1,4 +1,5 @@
-<div class="content">
+<mat-spinner *ngIf="isLoading"></mat-spinner>
+<div class="content" *ngIf="!isLoading">
     <ng-container *ngIf="selectedRecipe; else recipeListShow">
         <recipe-page [recipe]="selectedRecipe"></recipe-page>
         <hr>

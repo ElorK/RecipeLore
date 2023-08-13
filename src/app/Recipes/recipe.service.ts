@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Recipe } from './Models/recipe';
 import { Subject, map } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+
 
 @Injectable({
   providedIn: 'root'
@@ -9,9 +11,9 @@ import { HttpClient } from '@angular/common/http';
 export class RecipeService {
   private recipes: Recipe[] = [];
   private recipesUpdated = new Subject<Recipe[]>();
-  private path = "http://localhost:3000/api/recipes/"
+  private path = "http://localhost:3000/api/recipes/";
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private router: Router) { }
 
   getRecipes() {
     this.http.get<{ message: string, recipes: any[] }>(this.path)
@@ -50,6 +52,7 @@ export class RecipeService {
         newRecipe.id = id;
         this.recipes.push(newRecipe);
         this.recipesUpdated.next([...this.recipes]);
+        this.onFinish();
       });
   }
 
@@ -61,6 +64,7 @@ export class RecipeService {
         updatedRecipes[oldRecipeIndex] = recipe;
         this.recipes = updatedRecipes;
         this.recipesUpdated.next([...this.recipes]);
+        this.onFinish();
       }
       )
   }
@@ -71,6 +75,10 @@ export class RecipeService {
         const updateRecipes = this.recipes.filter(recipe => recipe.id !== recipeId);
         this.recipes = updateRecipes;
         this.recipesUpdated.next([...this.recipes])
+        this.onFinish();
       })
+  }
+  onFinish(){
+    this.router.navigate(['/'])
   }
 }

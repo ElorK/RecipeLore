@@ -19,6 +19,10 @@ mat-card-content {
     max-height: 200px;
 }
 
+mat-spinner {
+    margin: auto;
+}
+
 .recipeCard {
     transition: 0.3s;
 }

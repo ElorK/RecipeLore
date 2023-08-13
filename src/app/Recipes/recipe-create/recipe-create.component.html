@@ -1,5 +1,6 @@
 <mat-card>
-    <form (submit)="submitHandler(formDirective)" [formGroup]="form" #formDirective="ngForm">
+    <mat-spinner *ngIf="isLoading"></mat-spinner>
+    <form (submit)="submitHandler(formDirective)" [formGroup]="form" #formDirective="ngForm" *ngIf="!isLoading">
         <mat-card-header>
             <mat-card-title>
                 Id
