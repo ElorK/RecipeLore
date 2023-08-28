@@ -27,8 +27,7 @@ export class RecipeService {
             process: recipe.process,
             imageUrl: recipe.imageUrl
           }
-        }
-        )
+        })
       }
       ))
       .subscribe((recipes) => {
@@ -42,11 +41,18 @@ export class RecipeService {
   }
 
   getRecipe(id: string) {
-    return this.http.get<{_id: string, name: string, category: string, ingredients: string[], process: string[], imageUrl: string}>(this.path + id);
+    return this.http.get<{ _id: string, name: string, category: string, ingredients: string[], process: string[], imageUrl: string }>(this.path + id);
   }
 
-  addRecipe(newRecipe: Recipe) {
-    this.http.post<{ message: string, recipeId: string }>(this.path, newRecipe)
+  addRecipe(newRecipe: Recipe, image?: File) {
+    let recipeObject;
+    if (image) {
+      recipeObject = this.formDataCreator(newRecipe, image);
+    }
+    else {
+      recipeObject = newRecipe;
+    }
+    this.http.post<{ message: string, recipeId: string }>(this.path, recipeObject)
       .subscribe((resData) => {
         const id = resData.recipeId;
         newRecipe.id = id;
@@ -56,8 +62,16 @@ export class RecipeService {
       });
   }
 
-  updateRecipe(recipe: Recipe) {
-    this.http.put(this.path + recipe.id, recipe)
+  updateRecipe(recipe: Recipe, image?: File) {
+    let recipeObject;
+    if (image) {
+      recipeObject = this.formDataCreator(recipe, image);
+    }
+    else {
+      recipeObject = recipe;
+    }
+    console.log(recipeObject);
+    this.http.put(this.path + recipe.id, recipeObject)
       .subscribe((response) => {
         const updatedRecipes = [...this.recipes];
         const oldRecipeIndex = updatedRecipes.findIndex(r => r.id === recipe.id);
@@ -78,7 +92,23 @@ export class RecipeService {
         this.onFinish();
       })
   }
-  onFinish(){
+  onFinish() {
     this.router.navigate(['/'])
   }
+  formDataCreator(recipe: Recipe, image: File){
+    const recipeData = new FormData();
+    Object.entries(recipe).forEach(([key, value]) => {
+      if (typeof value == "string") {
+        recipeData.append(key, value);
+      }
+      else {
+        for (let i = 0; i < value.length; i++) {
+          recipeData.append(key, value[i]);
+        }
+      }
+    });
+    recipeData.append("image", image, recipe.name);
+    return recipeData;
+  }
 }
+

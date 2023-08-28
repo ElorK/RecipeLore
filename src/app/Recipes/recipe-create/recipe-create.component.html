@@ -10,7 +10,7 @@
             <mat-form-field>
                 <label for="name"></label>
                 <input formControlName="name" matInput type="text" placeholder="שם מתכון" required>
-                <!-- <mat-error *ngIf="nameInput.invalid">יש להזין שם מתכון</mat-error> -->
+                <mat-error *ngIf="form.get('name')?.invalid">יש להזין שם מתכון</mat-error>
             </mat-form-field>
             <hr>
             <mat-form-field>
@@ -21,7 +21,7 @@
                     <mat-option value="קינוח">קינוח</mat-option>
                 </mat-select>
             </mat-form-field>
-            <!-- <mat-error *ngIf="catInput.invalid">יש לבחור קטגוריה</mat-error> -->
+            <mat-error *ngIf="form.get('category')?.invalid && form.get('category')?.touched">יש לבחור קטגוריה</mat-error>
             <hr>
             <mat-card-title>רכיבים</mat-card-title>
             <div formArrayName="ingredients">
@@ -52,11 +52,12 @@
             </button>
             <hr>
             <mat-card-title>תמונה</mat-card-title>
-            <img [src]="imageUrl">
+            <img [src]="imageUrl" (click)="imgUpload.click()">
             <div>
                 <mat-form-field>
                     <input matInput type="text" formControlName="imageUrl" placeholder="קישור לתמונה" required>
                 </mat-form-field>
+                <input type="file" #imgUpload hidden (change)="onUpload($event)">
             </div>
         </mat-card-content>
         <button mat-raised-button color="primary" type="submit">שלח</button>

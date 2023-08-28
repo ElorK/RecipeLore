@@ -1,10 +1,11 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { Recipe } from '../Models/recipe';
 import { FormArray, FormBuilder, FormGroup, FormGroupDirective, Validators } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { RecipeService } from '../recipe.service';
 import { ActivatedRoute, ParamMap } from '@angular/router';
+import { mimeType } from './mime-type.validator';
 
 @Component({
   selector: 'recipe-create',
@@ -29,7 +30,8 @@ export class RecipeCreateComponent {
       category: ['', Validators.required],
       ingredients: this._formBuilder.array([this.addStringField()]),
       process: this._formBuilder.array([this.addStringField()]),
-      imageUrl: ['', Validators.required]
+      imageUrl: ['', Validators.required],
+      image: [null, { validators: [Validators.required], asyncValidators: [mimeType] }]
     });
   }
 
@@ -50,14 +52,17 @@ export class RecipeCreateComponent {
             process: recipe.process,
             imageUrl: recipe.imageUrl
           };
+          this.imageUrl = recipe.imageUrl;
           this.form = this._formBuilder.group({
             id: this.currentRecipe!.id,
             name: [this.currentRecipe!.name, Validators.required],
             category: [this.currentRecipe!.category, Validators.required],
             ingredients: this._formBuilder.array([]),
             process: this._formBuilder.array([]),
-            imageUrl: [this.currentRecipe!.imageUrl, Validators.required]
+            imageUrl: [this.currentRecipe!.imageUrl, Validators.required],
+            image: [null, { validators: [Validators.required], asyncValidators: [mimeType] }]
           });
+          
           this.currentRecipe!.ingredients.forEach(string => {
             this.subArrayAdd(this.ingArray, string);
           });
@@ -75,7 +80,8 @@ export class RecipeCreateComponent {
           category: ['', Validators.required],
           ingredients: this._formBuilder.array([this.addStringField()]),
           process: this._formBuilder.array([this.addStringField()]),
-          imageUrl: ['', Validators.required]
+          imageUrl: ['', Validators.required],
+          image: [null, { validators: [Validators.required], asyncValidators: [mimeType] }]
         });
       }
     })
@@ -123,7 +129,30 @@ export class RecipeCreateComponent {
       subArr.removeAt(i);
     }
   }
+
+
+  onUpload(e: Event) {
+    const file = (e.target as HTMLInputElement).files![0];
+    this.form.patchValue({ image: file });
+    this.form.get('image')?.updateValueAndValidity();
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imageUrl = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+  }
+
   submitHandler(formDirective: FormGroupDirective) {
+    if (this.form.value.imageUrl != ''){
+      this.form.controls['image'].clearValidators();
+      this.form.controls['image'].clearAsyncValidators();
+      this.form.controls['image'].updateValueAndValidity();
+    }
+    if (this.form.value.image != null){
+      this.form.controls['imageUrl'].clearValidators();
+      this.form.controls['imageUrl'].updateValueAndValidity();
+    }
     if (this.form.valid) {
       this.isLoading = true;
       if (this._mode === 'create') {
@@ -135,7 +164,7 @@ export class RecipeCreateComponent {
           process: (this.procArray.value as Array<any>).map(object => object.text),
           imageUrl: this.form.value.imageUrl
         };
-        this.recipeService.addRecipe(newRecipe);
+        this.recipeService.addRecipe(newRecipe, this.form.value.image);
         this.subArrayReset(this.ingArray);
         this.subArrayReset(this.procArray);
         formDirective.resetForm();
@@ -147,9 +176,8 @@ export class RecipeCreateComponent {
         this.currentRecipe!.ingredients = (this.ingArray.value as Array<any>).map(object => object.text),
           this.currentRecipe!.process = (this.procArray.value as Array<any>).map(object => object.text),
           this.currentRecipe!.imageUrl = this.form.value.imageUrl
-        this.recipeService.updateRecipe(this.currentRecipe!);
+        this.recipeService.updateRecipe(this.currentRecipe!, this.form.value.image);
       };
-
     }
   }
 }

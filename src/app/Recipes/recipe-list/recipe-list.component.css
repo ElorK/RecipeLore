@@ -21,6 +21,7 @@ mat-card-content {
 
 mat-spinner {
     margin: auto;
+    margin-top: 15px;
 }
 
 .recipeCard {
